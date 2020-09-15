@@ -16,10 +16,9 @@ fun checkLicenses(directory: File) {
     }
     directory.walkTopDown().forEach { file ->
         if (file.isFile && !file.isHidden && file.canRead()) {
-            val fileText = file.readText().replace("[\n\t]", " ")
-            println(fileText)
+            val fileText = file.readText().replace(Regex("\\s"), "")
             licensesHeadersParts.forEach {
-                if (fileText.contains(it.key)) {
+                if (fileText.contains(it.key.replace(Regex("\\s"), ""))) {
                     if (!mainLicenseExist && file.parentFile == directory) {
                         mainLicenseExist = true
                     }
@@ -31,12 +30,6 @@ fun checkLicenses(directory: File) {
 }
 
 fun main() {
-    val string = "Licensed under the Apache License, Version 2.0 (the \"License\");\n\n" +
-            "   you may not use this file except in compliance with the License.\n" +
-            "   You may obtain a copy of the License at\n" +
-            "\n" +
-            "       http://www.apache.org/licenses/LICENSE-2.0"
-    println(ApachePart == string.replace(Regex("[\n+( )+]"), " "))
     print("Enter project directory: ")
     checkLicenses(File(readLine()!!))
     val licenses = projectLicenses.distinct()
